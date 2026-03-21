@@ -8,7 +8,7 @@ const magicHour = new MagicHour({
 });
 
 const PROMPTS = [
-  "Transform person in image into a basketball player, no names on the Jersey; Position shot like they were being photographed for a trading card in a large basketball arena during a game, action shot like hitting a slam dunk or running across the court; Don't include any text or elements only the picture Utilize entire space, no white borders around the image; Make the image 1:1;"
+  "Transform person in image into a basketball player, no names on the Jersey; Position shot like they were being photographed for a trading card in a large basketball arena during a game performing various actions, action shot  Don't include any text or elements only the picture Utilize entire space, no white borders around the image; Make the image 1:1;"
 ];
 
 async function pollImageProject(id) {
@@ -89,30 +89,6 @@ document.getElementById("fetchProfileBtn").addEventListener("click", async () =>
 
 
 
-const button = document.querySelector('button');
-const input = document.querySelector('input[name="handle"]');
-const display = document.querySelector('#userInput');
-
-button.addEventListener('click', async () => {
-    const handle = input.value;
-    display.innerHTML = "Generating slop..."; // loading state
-    
-    const userData = await fetchInstagramUser(handle);
-    
-    if (userData) {
-        const safeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(userData.profilePicUrl)}`;
-        localStorage['userData'] = JSON.stringify(userData);
-        const formattedHtml = `
-            <h3>${userData.fullName}</h3>
-            <p>Followers: ${userData.followersCount.toLocaleString()}</p>
-            <img src="${safeUrl}" width="150" alt="Profile Picture">
-        `;
-        
-        display.innerHTML = formattedHtml;
-    }
-    else {
-        display.innerHTML = "Failed to fetch data.";
-    }
 // Step 2b: Back to Handle Input
 document.getElementById("backToHandleBtn").addEventListener("click", () => {
   document.getElementById("step-3-profile").style.display = "none";
@@ -184,5 +160,4 @@ document.getElementById("editorGenerateAiBtn").addEventListener("click", async (
     btn.disabled = false;
     btn.textContent = originalText;
   }
-});
 });
