@@ -185,4 +185,4 @@ document.getElementById("editorGenerateAiBtn").addEventListener("click", async (
     btn.textContent = originalText;
   }
 });
-
+});
