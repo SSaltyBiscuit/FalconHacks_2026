@@ -1,23 +1,12 @@
-import { ApifyClient } from 'apify-client';
-
-// Vite uses import.meta.env instead of process.env
-const client = new ApifyClient({
-    token: import.meta.env.APIFY_TOKEN,
-});
-
 export async function fetchInstagramUser(handle) {
-    console.log("Fetching Instagram data for:", handle);
+    console.log("Requesting data from local backend for:", handle);
     try {
-        // Start the Instagram Profile Scraper actor
-        const run = await client.actor("apify/instagram-profile-scraper").call({
-            usernames: [handle],
-        });
-
-        // Fetch results from the resulting dataset
-        const { items } = await client.dataset(run.defaultDatasetId).listItems();
-        return items[0]; 
+        const response = await fetch(`http://localhost:3000/api/scrape/${handle}`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        return await response.json();
     } catch (error) {
-        console.error("Error fetching Instagram data:", error);
+        console.error("Error fetching from backend:", error);
         return null;
     }
 }
