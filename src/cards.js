@@ -18,6 +18,47 @@ const state = {
   }
 }
 
+function preloadFromStorage() {
+  try {
+    const raw = localStorage.getItem('userData')
+    if (!raw) return
+
+    const data = JSON.parse(raw)
+
+    // Map Instagram fields → card fields
+    if (data.fullName)        state.fields.name    = data.fullName.toUpperCase()
+    if (data.username)        state.fields.team    = `@${data.username}`.toUpperCase()
+    if (data.followersCount != null) state.fields.ppg = String(data.followersCount)
+    if (data.followsCount   != null) state.fields.rpg = String(data.followsCount)
+    if (data.postsCount     != null) state.fields.apg = String(data.postsCount)
+    if (data.verified       != null) state.fields.fg  = data.verified ? '✓' : '—'
+
+    // Load the HD profile pic via CORS proxy (Instagram blocks direct hotlinking)
+    const photoUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(data.profilePicUrl)}`
+    if (photoUrl) preloadPhoto(photoUrl)
+
+  } catch (e) {
+    console.warn('Could not parse userData from localStorage:', e)
+  }
+}
+
+function preloadPhoto(url) {
+  const img = document.getElementById('card-photo-img')
+  const placeholder = document.getElementById('card-photo-placeholder')
+
+  // Instagram CDN URLs block direct <img> loads — proxy through your Express server
+  const proxied = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(url)}`
+
+  img.onload = () => {
+    img.classList.add('loaded')
+    placeholder.style.display = 'none'
+  }
+  img.onerror = () => {
+    console.warn('Photo failed to load (CORS). Try the proxy route.')
+  }
+  img.src = proxied
+}
+
 // ─── DOM refs ─────────────────────────────────────────
 const card = document.getElementById('trading-card')
 const cardBg = document.getElementById('card-bg')
@@ -267,6 +308,7 @@ export function showToast(msg) {
 
 // ─── Boot ─────────────────────────────────────────────
 async function init() {
+  preloadFromStorage()
   await loadTemplates()
   initFields()
   initPositionPills()

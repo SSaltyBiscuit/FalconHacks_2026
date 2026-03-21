@@ -119,7 +119,7 @@ button.addEventListener('click', async () => {
     
     if (userData) {
         const safeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(userData.profilePicUrl)}`;
-        
+        localStorage['userData'] = JSON.stringify(userData);
         const formattedHtml = `
             <h3>${userData.fullName}</h3>
             <p>Followers: ${userData.followersCount.toLocaleString()}</p>
