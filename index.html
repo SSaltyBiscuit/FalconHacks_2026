@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Basketball Pro Generator</title>
     <link rel="stylesheet" href="./src/style.css">
+    <link rel="icon" href="public/favicon.ico" type="image/x-icon" sizes="48x48">
   </head>
   <body>
     <div id="app">
       <h1>Basketball Pro Generator</h1>
       <div id="controls">
         <label for="instaHandle">Instagram handle:</label>
-        <input type="text" id="instaHandle" placeholder="@username" />
+        <input type="text" id="instaHandle" name="handle" placeholder="@username" />
         <br/><br/>
+        <div id="userInput"></div>
+        <br>
         <button id="generateBtn">Generate Basketball Images!</button>
       </div>
       <div id="output" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;"></div>
     </div>
-    <script type="module" src="/src/main.js"></script>
   </body>
+  <script type="module" src="/src/main.js"></script>
 </html>
