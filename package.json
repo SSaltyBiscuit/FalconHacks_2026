@@ -3,6 +3,6 @@
     "magic-hour": "^0.55.0"
   },
   "scripts": {
-    "dev": "node script.js"
+    "dev": "node scripts/script.js"
   }
 }
