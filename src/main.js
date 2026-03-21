@@ -84,8 +84,10 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
       const img = document.createElement("img");
       img.src = url;
       img.alt = `Basketball image ${i + 1} for ${handleInput}`;
-      img.style.maxWidth = "200px";
-      img.style.borderRadius = "8px";
+      img.style.maxWidth = "800px";
+      img.style.width = "100%";
+      img.style.borderRadius = "12px";
+      img.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
       outputDiv.appendChild(img);
     });
 
