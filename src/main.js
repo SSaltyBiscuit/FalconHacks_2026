@@ -97,8 +97,6 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
     outputDiv.innerHTML = `<p style="color:red">Failed to generate images: ${error?.message || error}</p>`;
   }
 });
-<<<<<<< HEAD
-=======
 
 
 
@@ -127,4 +125,3 @@ button.addEventListener('click', async () => {
         display.innerHTML = "Failed to fetch data.";
     }
 });
->>>>>>> f6d8b154d1776e06877b182e8daf22827075ffe9
