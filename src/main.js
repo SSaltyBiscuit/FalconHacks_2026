@@ -1,5 +1,6 @@
 import { Client as MagicHour } from "magic-hour";
 import { fetchInstagramUser } from './insta_api.js';
+import { updateCardWithGeneratedData } from './cards.js';
 
 const magicHour = new MagicHour({
   token: __SYSTEM_MAGIC_HOUR_API_KEY__,
@@ -36,72 +37,53 @@ async function pollImageProject(id) {
   }
 }
 
-document.getElementById("generateBtn").addEventListener("click", async () => {
+let currentUserData = null;
+let currentProfilePicSafeUrl = null;
+let currentGeneratedAiPicUrl = null;
+
+// Helper to generate the image
+async function generateAiImage(originalProfilePicUrl) {
+  const randomPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
+  const response = await magicHour.v1.aiHeadshotGenerator.create({
+    assets: {
+      imageFilePath: originalProfilePicUrl
+    },
+    style: {
+      prompt: randomPrompt
+    }
+  });
+
+  return await pollImageProject(response.id);
+}
+
+// Step 1: Fetch Profile
+document.getElementById("fetchProfileBtn").addEventListener("click", async () => {
   const handleInput = document.getElementById("instaHandle").value.trim();
   if (!handleInput) {
     alert("Please enter an Instagram handle.");
     return;
   }
 
-  const outputDiv = document.getElementById("output");
-  outputDiv.innerHTML = `Fetching @${handleInput.replace('@', '')}'s profile picture and generating an image...`;
+  document.getElementById("step-1-fetch").style.display = "none";
+  document.getElementById("step-2-loading").style.display = "block";
 
   try {
-    const userData = await fetchInstagramUser(handleInput.replace('@', ''));
-    if (!userData || !userData.profilePicUrl) {
+    currentUserData = await fetchInstagramUser(handleInput.replace('@', ''));
+    if (!currentUserData || !currentUserData.profilePicUrl) {
       throw new Error("Could not fetch Instagram profile picture.");
     }
 
-    const safeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(userData.profilePicUrl)}`;
+    currentProfilePicSafeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(currentUserData.profilePicUrl)}`;
 
-    // ensure image is fully loaded locally through the proxy before generating
-    await new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = resolve;
-      img.onerror = () => reject(new Error("Failed to load profile picture."));
-      img.src = safeUrl;
-    });
+    document.getElementById("step-2-loading").style.display = "none";
+    document.getElementById("step-3-profile").style.display = "block";
 
-    const results = [];
-
-    outputDiv.innerHTML = `Starting image generation...`;
-
-    // pick a random prompt from our list for variety
-    const randomPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
-
-    const response = await magicHour.v1.aiHeadshotGenerator.create({
-      assets: {
-        imageFilePath: userData.profilePicUrl
-      },
-      style: {
-        prompt: randomPrompt
-      }
-    });
-
-    const id = response.id;
-    outputDiv.innerHTML = `Image queued. Polling for completion...`;
-    
-    const downloadUrl = await pollImageProject(id);
-    if (downloadUrl) {
-      results.push(downloadUrl);
-    }
-
-    // display all
-    outputDiv.innerHTML = "";
-    results.forEach((url, i) => {
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = `Basketball image ${i + 1} for ${handleInput}`;
-      img.style.maxWidth = "800px";
-      img.style.width = "100%";
-      img.style.borderRadius = "12px";
-      img.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-      outputDiv.appendChild(img);
-    });
+    document.getElementById("profile-name").textContent = currentUserData.fullName || handleInput;
+    document.getElementById("profile-img").src = currentProfilePicSafeUrl;
 
   } catch (error) {
-    console.error("Error generating images:", error?.response ? error.response : error);
-    outputDiv.innerHTML = `<p style="color:red">Failed to generate images: ${error?.message || error}</p>`;
+    console.error("Error fetching data:", error);
+    document.getElementById("step-2-loading").innerHTML = `<p style="color:red">Failed to fetch data: ${error?.message || error}</p>`;
   }
 });
 
@@ -131,4 +113,76 @@ button.addEventListener('click', async () => {
     else {
         display.innerHTML = "Failed to fetch data.";
     }
+// Step 2b: Back to Handle Input
+document.getElementById("backToHandleBtn").addEventListener("click", () => {
+  document.getElementById("step-3-profile").style.display = "none";
+  document.getElementById("step-1-fetch").style.display = "block";
 });
+
+// Step 3: Continue to Editor (No AI Generation here)
+document.getElementById("toEditorBtn").addEventListener("click", () => {
+  const handleInput = document.getElementById("instaHandle").value.trim();
+  const nameToUse = (currentUserData && currentUserData.fullName) ? currentUserData.fullName : handleInput;
+  
+  // By default, map the fetched profile picture onto the card
+  updateCardWithGeneratedData(currentProfilePicSafeUrl, nameToUse);
+
+  // Add the original profile image to the Media Port
+  addThumbnailToMediaPort(currentProfilePicSafeUrl);
+
+  // Transition to editor
+  document.getElementById("landing-view").style.opacity = 0;
+  setTimeout(() => {
+    document.getElementById("landing-view").style.display = "none";
+    const editorView = document.getElementById("editor-view");
+    editorView.style.display = "block";
+    // trigger reflow
+    void editorView.offsetWidth;
+    editorView.style.opacity = 1;
+  }, 500);
+});
+
+// Helper for mediaport thumbnails
+function addThumbnailToMediaPort(url) {
+  const container = document.getElementById("ai-mediaport");
+  const img = document.createElement("img");
+  img.src = url;
+  img.crossOrigin = "anonymous";
+  img.style.width = "60px";
+  img.style.height = "60px";
+  img.style.objectFit = "cover";
+  img.style.borderRadius = "8px";
+  img.style.cursor = "pointer";
+  img.style.border = "2px solid transparent";
+  img.style.flexShrink = "0";
+  
+  img.addEventListener("click", () => {
+    updateCardWithGeneratedData(url, null);
+  });
+  
+  container.appendChild(img);
+}
+
+// Editor View: Generate AI Image
+document.getElementById("editorGenerateAiBtn").addEventListener("click", async () => {
+  const btn = document.getElementById("editorGenerateAiBtn");
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = "Generating...";
+
+  try {
+    const aiUrl = await generateAiImage(currentUserData.profilePicUrl);
+    
+    // Automatically apply to card and add to thumbnails
+    updateCardWithGeneratedData(aiUrl, null);
+    addThumbnailToMediaPort(aiUrl);
+
+  } catch (error) {
+     console.error("Error generating image:", error);
+     alert(`Failed to generate AI image: ${error?.message || error}`);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
+});
+

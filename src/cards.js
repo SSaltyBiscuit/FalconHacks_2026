@@ -246,6 +246,8 @@ function initPhotoUpload() {
   const img = document.getElementById('card-photo-img')
   const placeholder = document.getElementById('card-photo-placeholder')
 
+  if (!zone || !trigger || !fileInput) return; // Wait to bail out if removed
+
   function handleFile(file) {
     if (!file || !file.type.startsWith('image/')) return
     const url = URL.createObjectURL(file)
@@ -304,6 +306,25 @@ export function showToast(msg) {
   toast.textContent = msg
   toast.classList.add('show')
   setTimeout(() => toast.classList.remove('show'), 2500)
+}
+
+export function updateCardWithGeneratedData(photoUrl, name) {
+  const img = document.getElementById('card-photo-img')
+  const placeholder = document.getElementById('card-photo-placeholder')
+  
+  if (photoUrl) {
+    img.crossOrigin = "anonymous"
+    img.src = photoUrl
+    img.classList.add('loaded')
+    placeholder.style.display = 'none'
+    state.photo = photoUrl
+  }
+
+  if (name) {
+    const nameInput = document.getElementById('field-name')
+    nameInput.value = name
+    nameInput.dispatchEvent(new Event('input'))
+  }
 }
 
 // ─── Boot ─────────────────────────────────────────────

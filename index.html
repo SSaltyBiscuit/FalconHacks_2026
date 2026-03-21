@@ -4,24 +4,254 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>March Madness Card Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./src/style.css">
     <link rel="icon" href="public/favicon.ico" type="image/x-icon" sizes="48x48">
+    <style>
+      #landing-view, #editor-view {
+        transition: opacity 0.5s ease-in-out;
+      }
+    </style>
   </head>
   <body>
-    <div id="app">
-      <h1>March Madness Card Generator</h1>
-      <div id="controls">
-        <label for="instaHandle">Instagram handle:</label>
-        <input type="text" id="instaHandle" name="handle" placeholder="@username" />
-        <br/><br/>
-        <div id="userInput"></div>
-        <br>
-        <button id="generateBtn">Generate Basketball Images!</button>
+    <!-- LANDING VIEW -->
+    <div id="landing-view" class="landing-hero">
+      <div class="landing-content">
+        <div class="landing-logo">🏀</div>
+        <h1 class="landing-title">March Madness Card Generator</h1>
+        
+        <div id="step-1-fetch" class="landing-step">
+          <label for="instaHandle" class="landing-label">Enter Instagram Handle</label>
+          <div class="landing-input-wrapper">
+            <span class="landing-input-prefix">@</span>
+            <input type="text" id="instaHandle" name="handle" class="landing-input" placeholder="username" spellcheck="false" autocomplete="off" />
+          </div>
+          <button id="fetchProfileBtn" class="btn-primary btn-large">Continue</button>
+        </div>
+
+        <div id="step-2-loading" class="landing-step" style="display: none;">
+          <h3 id="loading-text" class="landing-subtitle">Fetching Profile...</h3>
+        </div>
+
+        <div id="step-3-profile" class="landing-step" style="display: none;">
+          <img id="profile-img" src="" alt="Profile" class="landing-avatar" crossorigin="anonymous" />
+          <h3 id="profile-name" class="landing-name"></h3>
+          <div class="landing-actions">
+            <button id="backToHandleBtn" class="btn-secondary btn-large">Back</button>
+            <button id="toEditorBtn" class="btn-primary btn-large">Continue</button>
+          </div>
+        </div>
       </div>
-      <div id="output" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-top: 20px;"></div>
-      <button class="btn-primary"><a href="src/cards.html">To Card Editor</a></button>
+    </div>
+
+    <!-- EDITOR VIEW -->
+    <div id="editor-view" style="display: none; opacity: 0;">
+      <div id="app">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-logo">
+            <span class="logo-icon">🏀</span>
+            <span class="logo-text">CARD<em>STUDIO</em></span>
+          </div>
+          <nav class="header-nav">
+            <span class="nav-badge">BETA</span>
+            <button class="btn-ghost" id="btn-reset">Reset</button>
+            <button class="btn-primary" id="btn-export-png">Export PNG</button>
+            <button class="btn-secondary" id="btn-export-pdf">Export PDF</button>
+          </nav>
+        </header>
+
+        <main class="workspace">
+          <!-- Left Panel: Controls -->
+          <aside class="panel panel-left">
+            <section class="panel-section">
+              <h3 class="panel-title">Template</h3>
+              <div class="template-grid" id="template-grid">
+                <!-- injected by JS -->
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <h3 class="panel-title">Player Info</h3>
+              <div class="field-group">
+                <label>Player Name</label>
+                <input type="text" id="field-name" class="field-input" placeholder="LEBRON JAMES" maxlength="24" />
+              </div>
+              <div class="field-group">
+                <label>Position</label>
+                <div class="position-pills" id="position-pills">
+                  <button class="pill active" data-pos="PG">PG</button>
+                  <button class="pill" data-pos="SG">SG</button>
+                  <button class="pill" data-pos="SF">SF</button>
+                  <button class="pill" data-pos="PF">PF</button>
+                  <button class="pill" data-pos="C">C</button>
+                </div>
+              </div>
+              <div class="field-group">
+                <label>Team Name</label>
+                <input type="text" id="field-team" class="field-input" placeholder="LOS ANGELES LAKERS" maxlength="32" />
+              </div>
+              <div class="field-row">
+                <div class="field-group">
+                  <label>Jersey #</label>
+                  <input type="text" id="field-number" class="field-input field-small" placeholder="23" maxlength="3" />
+                </div>
+                <div class="field-group">
+                  <label>Year</label>
+                  <input type="text" id="field-year" class="field-input field-small" placeholder="2025" maxlength="4" />
+                </div>
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <h3 class="panel-title">Stats</h3>
+              <div class="stats-grid">
+                <div class="field-group">
+                  <label>PPG</label>
+                  <input type="text" id="stat-ppg" class="field-input stat-input" placeholder="27.3" maxlength="5" />
+                </div>
+                <div class="field-group">
+                  <label>RPG</label>
+                  <input type="text" id="stat-rpg" class="field-input stat-input" placeholder="8.1" maxlength="5" />
+                </div>
+                <div class="field-group">
+                  <label>APG</label>
+                  <input type="text" id="stat-apg" class="field-input stat-input" placeholder="6.9" maxlength="5" />
+                </div>
+                <div class="field-group">
+                  <label>FG%</label>
+                  <input type="text" id="stat-fg" class="field-input stat-input" placeholder="52.4" maxlength="5" />
+                </div>
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 class="panel-title" style="margin: 0;">Media</h3>
+                <button id="editorGenerateAiBtn" class="btn-primary" style="font-size: 0.75rem; padding: 4px 8px; margin-left: 10px;">Generate AI Image</button>
+              </div>
+              <div id="ai-mediaport" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+                <!-- Dynamically populated with generated images -->
+              </div>
+            </section>
+          </aside>
+
+          <!-- Center: Card Preview -->
+          <div class="canvas-area">
+            <div class="canvas-label">LIVE PREVIEW</div>
+            <div class="card-wrapper" id="card-wrapper">
+              <div class="trading-card" id="trading-card">
+                <div class="card-shine" id="card-shine"></div>
+                <div class="card-bg" id="card-bg"></div>
+                <div class="card-photo-area" id="card-photo-area">
+                  <div class="card-photo-placeholder" id="card-photo-placeholder">
+                    <span id="photo-status-text" style="font-size: 1.5rem;">🏀</span>
+                  </div>
+                  <img id="card-photo-img" class="card-photo-img" src="" alt="" />
+                </div>
+                <div class="card-overlay" id="card-overlay"></div>
+                <div class="card-content">
+                  <div class="card-top-bar" id="card-top-bar">
+                    <span class="card-series" id="card-series">PRIZM</span>
+                    <span class="card-year" id="card-year-display">2025</span>
+                  </div>
+                  <div class="card-bottom">
+                    <div class="card-number-badge" id="card-number-badge">#23</div>
+                    <div class="card-player-name" id="card-player-name">LEBRON JAMES</div>
+                    <div class="card-position-team">
+                      <span class="card-position" id="card-position">SF</span>
+                      <span class="card-divider">·</span>
+                      <span class="card-team" id="card-team">LOS ANGELES LAKERS</span>
+                    </div>
+                    <div class="card-stats-row" id="card-stats-row">
+                      <div class="card-stat"><span class="stat-val" id="display-ppg">27.3</span><span class="stat-lbl">PPG</span></div>
+                      <div class="card-stat"><span class="stat-val" id="display-rpg">8.1</span><span class="stat-lbl">RPG</span></div>
+                      <div class="card-stat"><span class="stat-val" id="display-apg">6.9</span><span class="stat-lbl">APG</span></div>
+                      <div class="card-stat"><span class="stat-val" id="display-fg">52.4</span><span class="stat-lbl">FG%</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="canvas-hint">Tilt your cursor over the card for the shine effect</div>
+          </div>
+
+          <!-- Right Panel: Style tweaks -->
+          <aside class="panel panel-right">
+            <section class="panel-section">
+              <h3 class="panel-title">Card Colors</h3>
+              <div class="color-row">
+                <label>Background</label>
+                <input type="color" id="color-primary" class="color-swatch" value="#0a0a1a" />
+              </div>
+              <div class="color-row">
+                <label>Accent / Border</label>
+                <input type="color" id="color-accent" class="color-swatch" value="#c9a84c" />
+              </div>
+              <div class="color-row">
+                <label>Text Color</label>
+                <input type="color" id="color-text" class="color-swatch" value="#ffffff" />
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <h3 class="panel-title">Typography</h3>
+              <div class="field-group">
+                <label>Name Font</label>
+                <select id="font-select" class="field-input">
+                  <option value="'Bebas Neue', sans-serif">Bebas Neue (Sport)</option>
+                  <option value="'Oswald', sans-serif">Oswald (Bold)</option>
+                  <option value="'Playfair Display', serif">Playfair (Luxury)</option>
+                  <option value="'DM Mono', monospace">DM Mono (Tech)</option>
+                </select>
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <h3 class="panel-title">Special FX</h3>
+              <div class="toggle-row">
+                <label>Holographic Shine</label>
+                <button class="toggle active" id="toggle-shine" data-on="ON" data-off="OFF">ON</button>
+              </div>
+              <div class="toggle-row">
+                <label>Border Glow</label>
+                <button class="toggle active" id="toggle-glow" data-on="ON" data-off="OFF">ON</button>
+              </div>
+              <div class="toggle-row">
+                <label>Grain Texture</label>
+                <button class="toggle" id="toggle-grain" data-on="ON" data-off="OFF">OFF</button>
+              </div>
+            </section>
+
+            <section class="panel-section">
+              <h3 class="panel-title">Export Settings</h3>
+              <div class="field-group">
+                <label>Scale</label>
+                <select id="export-scale" class="field-input">
+                  <option value="2">2× (Standard)</option>
+                  <option value="3" selected>3× (High Res)</option>
+                  <option value="4">4× (Ultra)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label>Background</label>
+                <select id="export-bg" class="field-input">
+                  <option value="transparent">Transparent</option>
+                  <option value="white">White</option>
+                  <option value="black">Black</option>
+                </select>
+              </div>
+            </section>
+          </aside>
+        </main>
+      </div>
+
+      <div id="toast" class="toast"></div>
     </div>
     
   </body>
   <script type="module" src="/src/main.js"></script>
+  <script type="module" src="/src/cards.js"></script>
 </html>

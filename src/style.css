@@ -28,6 +28,129 @@ body {
 /* ─── Layout ─────────────────────────────────────────── */
 #app { display: flex; flex-direction: column; height: 100vh; }
 
+/* ─── Landing View ───────────────────────────────────── */
+.landing-hero {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #1c1c22 0%, #0c0c0f 100%);
+  z-index: 100;
+}
+.landing-content {
+  text-align: center;
+  max-width: 540px;
+  width: 90%;
+  padding: 50px 40px;
+  background: rgba(20, 20, 24, 0.6);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+}
+.landing-logo {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+.landing-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  letter-spacing: 0.05em;
+  color: var(--gold);
+  margin-bottom: 40px;
+  text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.landing-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.4s ease-out;
+}
+.landing-label {
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.landing-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 0 20px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 360px;
+  transition: all 0.2s;
+}
+.landing-input-wrapper:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 15px rgba(201,168,76,0.15);
+}
+.landing-input-prefix {
+  font-size: 24px;
+  color: var(--gold);
+  font-family: 'Bebas Neue', sans-serif;
+  margin-right: 10px;
+  margin-top: 2px;
+}
+.landing-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 24px;
+  padding: 16px 0;
+  outline: none;
+  font-family: 'Oswald', sans-serif;
+}
+.landing-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+.btn-large {
+  font-size: 20px;
+  padding: 14px 40px;
+  letter-spacing: 0.15em;
+  border-radius: 8px;
+}
+.landing-subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--text);
+  margin-bottom: 20px;
+  letter-spacing: 0.05em;
+}
+.landing-avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--gold);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  margin-bottom: 20px;
+}
+.landing-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  letter-spacing: 0.05em;
+  margin-bottom: 30px;
+  color: var(--text);
+}
+.landing-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .header {
   display: flex;
   align-items: center;
