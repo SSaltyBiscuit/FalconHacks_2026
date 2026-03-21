@@ -1,4 +1,5 @@
 import { Client as MagicHour } from "magic-hour";
+import { fetchInstagramUser } from './insta_api.js';
 
 const magicHour = new MagicHour({
   token: __SYSTEM_MAGIC_HOUR_API_KEY__,
@@ -94,9 +95,9 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
     outputDiv.innerHTML = `<p style="color:red">Failed to generate images: ${error?.message || error}</p>`;
   }
 });
-import { fetchInstagramUser } from './insta_api.js';
 
-// In your main.js or where you handle UI:
+
+
 const button = document.querySelector('button');
 const input = document.querySelector('input[name="handle"]');
 const display = document.querySelector('#userInput');
