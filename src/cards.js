@@ -2,7 +2,7 @@ import { initExport } from './export.js'
 
 // ─── State ────────────────────────────────────────────
 const state = {
-  template: 'prizm',
+  template: 'Magic Hour',
   templateData: [],
   photo: null,
   colors: { primary: '#0a0a1a', accent: '#c9a84c', text: '#ffffff' },

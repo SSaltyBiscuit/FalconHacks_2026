@@ -72,7 +72,7 @@ document.getElementById("fetchProfileBtn").addEventListener("click", async () =>
     if (!currentUserData || !currentUserData.profilePicUrl) {
       throw new Error("Could not fetch Instagram profile picture.");
     }
-
+    localStorage.setItem('userData', JSON.stringify(currentUserData));
     currentProfilePicSafeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(currentUserData.profilePicUrl)}`;
 
     document.getElementById("step-2-loading").style.display = "none";
