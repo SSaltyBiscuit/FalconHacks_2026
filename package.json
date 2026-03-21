@@ -12,6 +12,8 @@
     "vite": "^8.0.1"
   },
   "dependencies": {
+    "form-data": "^4.0.5",
+    "magic-hour": "^0.55.0"
     "apify-client": "^2.22.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",

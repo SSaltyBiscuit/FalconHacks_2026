@@ -1,30 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/src/style.css" rel="stylesheet" type="text/css">
-    <title>BGSU Hackathon 2026</title>
-    <link rel="icon" href="public/favicon.ico" type="image/x-icon" sizes="48x48">
-</head>
-<body>
-    <div id="center">
-    <header>
-        <h1>Sloptron 9000</h1>
-    </header>
-
-    <main>
-        <section>
-            <p>Enter your Instagram handle:</p>
-            <input type="text" name="handle" placeholder="e.g. bgsu">
-            <br><br>
-            <button>Generate</button>
-            
-            <div id="userInput"></div>
-        </section>
-    </main>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basketball Pro Generator</title>
+    <link rel="stylesheet" href="./src/style.css">
+  </head>
+  <body>
+    <div id="app">
+      <h1>Basketball Pro Generator</h1>
+      <div id="controls">
+        <label for="instaHandle">Instagram handle:</label>
+        <input type="text" id="instaHandle" placeholder="@username" />
+        <br/><br/>
+        <button id="generateBtn">Generate Basketball Images!</button>
+      </div>
+      <div id="output" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;"></div>
     </div>
-
     <script type="module" src="/src/main.js"></script>
-</body>
+  </body>
 </html>
