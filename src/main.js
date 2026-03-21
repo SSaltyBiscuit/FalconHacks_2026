@@ -7,11 +7,7 @@ const magicHour = new MagicHour({
 });
 
 const PROMPTS = [
-  "professional basketball player dribbling ball, high quality, highly detailed",
-  "professional basketball player performing a slam dunk, action shot, dramatic lighting",
-  "professional basketball player shooting a three pointer, dynamic pose, stadium lights",
-  "professional basketball player standing proudly with the ball on the court, realistic sports photography",
-  "professional basketball player mid-air attempting a lay up, intense game moment"
+  "Transform person in image into a basketball player, no names on the Jersey; Position shot like they were being photographed for a trading card in a large basketball arena during a game, action shot like hitting a slam dunk or running across the court; Don't include any text or elements only the picture Utilize entire space, no white borders around the image; Make the image 1:1;"
 ];
 
 async function pollImageProject(id) {
