@@ -27,7 +27,7 @@ async function pollImageProject(id) {
         throw new Error(`API reported generation error: ${errMsg}`);
       }
       
-      // Wait before polling again
+      // wait before polling again
       await new Promise(res => setTimeout(res, 5000));
     } catch (e) {
       if (e.message && e.message.includes("502")) {
@@ -51,20 +51,31 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
   outputDiv.innerHTML = `Fetching @${handleInput.replace('@', '')}'s profile picture and generating an image...`;
 
   try {
-    // Mock user profile image for the instagram handle
-    // Using a reliable sample face image that won't be blocked by hotlink prevention 
-    // and ends cleanly in .jpg for Magic Hour's backend parser.
-    const mockProfileImageUrl = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-sample-data-files/master/Face/images/Family1-Dad1.jpg";
+    const userData = await fetchInstagramUser(handleInput.replace('@', ''));
+    if (!userData || !userData.profilePicUrl) {
+      throw new Error("Could not fetch Instagram profile picture.");
+    }
+
+    const safeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(userData.profilePicUrl)}`;
+
+    // ensure image is fully loaded locally through the proxy before generating
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = resolve;
+      img.onerror = () => reject(new Error("Failed to load profile picture."));
+      img.src = safeUrl;
+    });
+
     const results = [];
 
     outputDiv.innerHTML = `Starting image generation...`;
-    
-    // Pick a random prompt from our list for variety
+
+    // pick a random prompt from our list for variety
     const randomPrompt = PROMPTS[Math.floor(Math.random() * PROMPTS.length)];
 
     const response = await magicHour.v1.aiHeadshotGenerator.create({
       assets: {
-        imageFilePath: mockProfileImageUrl
+        imageFilePath: userData.profilePicUrl
       },
       style: {
         prompt: randomPrompt
@@ -79,7 +90,7 @@ document.getElementById("generateBtn").addEventListener("click", async () => {
       results.push(downloadUrl);
     }
 
-    // Display all
+    // display all
     outputDiv.innerHTML = "";
     results.forEach((url, i) => {
       const img = document.createElement("img");
@@ -106,7 +117,7 @@ const display = document.querySelector('#userInput');
 
 button.addEventListener('click', async () => {
     const handle = input.value;
-    display.innerHTML = "Generating slop..."; // Loading state
+    display.innerHTML = "Generating slop..."; // loading state
     
     const userData = await fetchInstagramUser(handle);
     
