@@ -1,4 +1,4 @@
-import { initExport } from './export.js'
+import { initExport, captureCard, getExportSettings } from './export.js'
 
 // ─── State ────────────────────────────────────────────
 const state = {
@@ -327,6 +327,49 @@ export function updateCardWithGeneratedData(photoUrl, name) {
   }
 }
 
+// ─── Instagram Share (mobile only) ───────────────────
+function initInstagramShare() {
+  const btn = document.getElementById('btn-share-instagram')
+
+  // Only show on mobile devices
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  if (!isMobile) return
+
+  btn.style.display = ''
+
+  btn.addEventListener('click', async () => {
+    try {
+      showToast('Preparing image…')
+      await loadLibs()  // html2canvas already loaded via export.js
+
+      // Capture the card
+      const { scale, bgColor } = getExportSettings()
+      const canvas = await captureCard(scale, bgColor)
+
+      // Convert canvas to a Blob (File object required by Web Share API)
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
+      const playerName = (state.fields.name || 'card').replace(/\s+/g, '_').toLowerCase()
+      const file = new File([blob], `${playerName}_card.png`, { type: 'image/png' })
+
+      // Check if this browser supports sharing files
+      if (!navigator.canShare || !navigator.canShare({ files: [file] })) {
+        showToast('Sharing not supported on this browser')
+        return
+      }
+
+      await navigator.share({
+        files: [file],
+        title: 'My Basketball Card',
+      })
+
+      showToast('Shared ✓')
+    } catch (err) {
+      if (err.name === 'AbortError') return // user cancelled — not an error
+      console.error(err)
+      showToast('Share failed — try Export PNG instead')
+    }
+  })
+}
 // ─── Boot ─────────────────────────────────────────────
 async function init() {
   preloadFromStorage()
@@ -340,6 +383,7 @@ async function init() {
   initTilt()
   initReset()
   initExport(state, showToast)
+  initInstagramShare()
 }
 
 init()

@@ -14,7 +14,7 @@ async function loadLibs() {
   }
 }
 
-async function captureCard(scale = 3, bgColor = null) {
+export async function captureCard(scale = 3, bgColor = null) {
   const card = document.getElementById('trading-card')
 
   // Disable transitions + tilt so html2canvas sees a clean flat element
@@ -51,7 +51,7 @@ async function captureCard(scale = 3, bgColor = null) {
   return canvas
 }
 
-function getExportSettings() {
+export function getExportSettings() {
   const scale = parseInt(document.getElementById('export-scale').value, 10) || 3
   const bgSetting = document.getElementById('export-bg').value
   const bgColor = bgSetting === 'transparent' ? null : bgSetting === 'white' ? '#ffffff' : '#000000'

@@ -2,6 +2,7 @@ import { Client as MagicHour } from "magic-hour";
 import { fetchInstagramUser } from './insta_api.js';
 import { updateCardWithGeneratedData } from './cards.js';
 
+
 const magicHour = new MagicHour({
   token: __SYSTEM_MAGIC_HOUR_API_KEY__,
   baseUrl: "/magichour-api" // using vite proxy
@@ -138,6 +139,8 @@ function addThumbnailToMediaPort(url) {
   
   container.appendChild(img);
 }
+
+
 
 // Editor View: Generate AI Image
 document.getElementById("editorGenerateAiBtn").addEventListener("click", async () => {

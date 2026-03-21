@@ -371,6 +371,20 @@ body {
 }
 .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
 
+.btn-instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  border: none;
+  border-radius: var(--radius);
+  color: #fff;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  padding: 8px 18px;
+  transition: opacity 0.15s;
+}
+.btn-instagram:hover { opacity: 0.85; }
+
 .btn-secondary {
   background: transparent;
   border: 1px solid var(--gold);
