@@ -12,12 +12,12 @@ button.addEventListener('click', async () => {
     const userData = await fetchInstagramUser(handle);
     
     if (userData) {
-        const proxiedUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(userData.profilePicUrlHD)}`;
+        const safeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(userData.profilePicUrl)}`;
         
         const formattedHtml = `
             <h3>${userData.fullName}</h3>
             <p>Followers: ${userData.followersCount.toLocaleString()}</p>
-            <img src="${proxiedUrl}" width="150" alt="Profile Picture">
+            <img src="${safeUrl}" width="150" alt="Profile Picture">
         `;
         
         display.innerHTML = formattedHtml;

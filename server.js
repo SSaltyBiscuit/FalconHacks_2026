@@ -29,21 +29,15 @@ app.get('/api/scrape/:handle', async (req, res) => {
 });
 
 app.get('/api/proxy-image', async (req, res) => {
-    const imageUrl = req.query.url;
-    if (!imageUrl) return res.status(400).send("No URL provided");
-
     try {
-        const response = await fetch(imageUrl);
-        const buffer = await response.arrayBuffer();
-        const contentType = response.headers.get('content-type');
+        const response = await fetch(req.query.url);
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer); // Convert to Node.js Buffer
         
-        // Tell the browser this is a standard image from YOUR server
-        res.set('Content-Type', contentType);
-        res.set('Cross-Origin-Resource-Policy', 'cross-origin'); 
-        res.send(Buffer.from(buffer));
+        res.set('Content-Type', response.headers.get('content-type'));
+        res.send(buffer);
     } catch (e) {
-        console.error("Proxy error:", e);
-        res.status(500).send("Error proxying image");
+        res.status(500).send("Proxy failed");
     }
 });
 
