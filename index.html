@@ -1,17 +1,22 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
-    <link href="styles/styles.css" rel="stylesheet" type="text/css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="src/style.css" rel="stylesheet" type="text/css">
     <title>BGSU Hackathon 2026</title>
-    
 </head>
-    <div id="userInput"></div>
-    <h1>Sloptron 9000</h1>
-
-        
-          Instagram Handle <input type="text" name="handle" value=""><br><br>
-          <button>generate some slop!</button>
-       
-
-
-
-</html>
+<body>
+    <header>
+        <h1>Sloptron 9000</h1>
+    </header>
+    <main>
+        <section>
+            <p>Enter your Instagram handle:</p>
+            <input type="text" name="handle" value="">
+            <button>generate some slop!</button>
+            <div id="userInput"></div>
+        </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+</body>
