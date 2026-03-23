@@ -4,7 +4,7 @@ import { updateCardWithGeneratedData } from './cards.js';
 
 
 const magicHour = new MagicHour({
-  token: __SYSTEM_MAGIC_HOUR_API_KEY__,
+  token: import.meta.env.VITE_MAGIC_HOUR_API_KEY,
   baseUrl: "/magichour-api" // using vite proxy
 });
 
@@ -74,7 +74,7 @@ document.getElementById("fetchProfileBtn").addEventListener("click", async () =>
       throw new Error("Could not fetch Instagram profile picture.");
     }
     localStorage.setItem('userData', JSON.stringify(currentUserData));
-    currentProfilePicSafeUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(currentUserData.profilePicUrl)}`;
+    currentProfilePicSafeUrl = `/api/proxy-image?url=${encodeURIComponent(currentUserData.profilePicUrl)}`;
 
     document.getElementById("step-2-loading").style.display = "none";
     document.getElementById("step-3-profile").style.display = "block";

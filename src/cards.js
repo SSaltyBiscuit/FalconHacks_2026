@@ -34,7 +34,7 @@ function preloadFromStorage() {
     if (data.verified       != null) state.fields.fg  = data.verified ? '✓' : '—'
 
     // Load the HD profile pic via CORS proxy (Instagram blocks direct hotlinking)
-    const photoUrl = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(data.profilePicUrl)}`
+    const photoUrl = `/api/proxy-image?url=${encodeURIComponent(data.profilePicUrl)}`
     if (photoUrl) preloadPhoto(photoUrl)
 
   } catch (e) {
@@ -47,7 +47,7 @@ function preloadPhoto(url) {
   const placeholder = document.getElementById('card-photo-placeholder')
 
   // Instagram CDN URLs block direct <img> loads — proxy through your Express server
-  const proxied = `http://localhost:3000/api/proxy-image?url=${encodeURIComponent(url)}`
+  const proxied = `/api/proxy-image?url=${encodeURIComponent(url)}`
 
   img.onload = () => {
     img.classList.add('loaded')
