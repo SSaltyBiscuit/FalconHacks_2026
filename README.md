@@ -47,6 +47,17 @@ npm start
 
 Visit `http://<server-ip>:3000`.
 
+## One-Command Deploy (Amazon Linux)
+
+After cloning the repo on EC2:
+
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+The script will pull latest code, install dependencies, build, reload PM2, run a health check, then test and reload Nginx.
+
 ## Deploy to AWS EC2 (Ubuntu)
 
 1. Launch EC2 instance
