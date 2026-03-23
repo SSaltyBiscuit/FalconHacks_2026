@@ -96,7 +96,17 @@ app.get('/api/proxy-image', async (req, res) => {
 
 if (existsSync(distDir)) {
   app.use(express.static(distDir));
-  app.get('*', (req, res) => {
+  app.use((req, res, next) => {
+    if (req.method !== 'GET') {
+      next();
+      return;
+    }
+
+    if (req.path.startsWith('/api/')) {
+      next();
+      return;
+    }
+
     res.sendFile(join(distDir, 'index.html'));
   });
 }

@@ -4,7 +4,7 @@ import { updateCardWithGeneratedData } from './cards.js';
 
 
 const magicHour = new MagicHour({
-  token: import.meta.env.VITE_MAGIC_HOUR_API_KEY,
+  token: "mhk_live_WHVL7Euo3XevcCuUh0Nb22r7Yphj2U4zFpnTnEjFLzGaHn9xwttUHKGm4PKI4yyXwuquG6Lw65p97bKq",
   baseUrl: "/magichour-api" // using vite proxy
 });
 
